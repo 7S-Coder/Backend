@@ -79,4 +79,7 @@ app.get("/api/books", (req, res) => {
     .catch((error) => res.status(400).json({ error }));
 });
 
+// POST RATING
+app.post("/api/books/:id/rating", (req, res) => {});
+
 module.exports = app;

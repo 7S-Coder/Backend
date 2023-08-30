@@ -9,10 +9,11 @@ const bookSchema = mongoose.Schema({
   author: { type: String, required: true },
   imageUrl: { type: String, required: true },
   year: { type: Number, required: true },
-  rating: [
+  genre: { type: String, required: true },
+  ratings: [
     {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      score: { type: Number, min: 0, max: 5 },
+      grade: { type: Number, min: 0, max: 5 },
     },
   ],
   averageRating: { type: Number, default: 0 },
