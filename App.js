@@ -4,6 +4,10 @@
 
 const mongoose = require("mongoose");
 
+const express = require("express");
+
+const bookRoutes = require("./routes/book");
+
 // se connecter à ma bdd sur MongoDb
 mongoose
   .connect(
@@ -16,8 +20,7 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
-const express = require("express");
-
+// eslint-disable-next-line no-unused-vars
 const Book = require("./models/Books");
 
 const app = express();
@@ -38,48 +41,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// initialisation du CRUD (Create, Read, Update, Delete)
-// POST A BOOK
-
-app.post("/api/books", (req, res) => {
-  delete req.body._id;
-  const book = new Book({
-    ...req.body,
-  });
-  book
-    .save()
-    .then(() => res.status(201).json({ message: "Objet enregistré !" }))
-    .catch((error) => res.status(400).json({ error }));
-});
-// DELETE A BOOK
-
-app.delete("/api/books/:id", (req, res) => {
-  Book.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: "Objet supprimé !" }))
-    .catch((error) => res.status(400).json({ error }));
-});
-
-// PUT A BOOK
-app.put("/api/books/:id", (req, res) => {
-  Book.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-    .then(() => res.status(200).json({ message: "Objet modifié !" }))
-    .catch((error) => res.status(400).json({ error }));
-});
-
-// GET ONE BOOK
-app.get("/api/books/:id", (req, res) => {
-  Book.findOne({ _id: req.params.id })
-    .then((thing) => res.status(200).json(thing))
-    .catch((error) => res.status(404).json({ error }));
-});
-// GET ALL BOOKS
-app.get("/api/books", (req, res) => {
-  Book.find()
-    .then((things) => res.status(200).json(things))
-    .catch((error) => res.status(400).json({ error }));
-});
-
-// POST RATING
-app.post("/api/books/:id/rating", (req, res) => {});
+app.use("/api/book", bookRoutes);
 
 module.exports = app;
