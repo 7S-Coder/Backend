@@ -8,6 +8,8 @@ const express = require("express");
 
 const bookRoutes = require("./routes/book");
 
+const userRoutes = require("./routes/user");
+
 // se connecter à ma bdd sur MongoDb
 mongoose
   .connect(
@@ -42,5 +44,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/book", bookRoutes);
+app.use("/api/auth", userRoutes);
 
 module.exports = app;
