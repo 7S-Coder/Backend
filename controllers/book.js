@@ -72,3 +72,32 @@ exports.ratingBook = async (req, res) => {
 
   return res.status(500).json({ message: "Erreur inattendue" });
 };
+
+exports.getBestBooks = async (req, res) => {
+  try {
+    const books = await Book.aggregate([
+      {
+        $project: {
+          title: 1,
+          imageUrl: 1,
+          author: 1,
+          year: 1,
+          genre: 1,
+          averageRating: { $avg: "$ratings.grade" },
+        },
+      },
+      {
+        $sort: { averageRating: -1 },
+      },
+      {
+        $limit: 3,
+      },
+    ]);
+
+    // Envoyer une réponse avec les meilleurs livres
+    res.status(200).json(books);
+  } catch (error) {
+    // Gérer les erreurs et renvoyer une réponse avec l'erreur
+    res.status(400).json({ error });
+  }
+};

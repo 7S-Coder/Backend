@@ -2,6 +2,10 @@
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
 
+// const mongodbId = import.meta.env.VITE_MONGODB_ID;
+
+// const mongodbPassword = import.meta.env.VITE_MONGODB_PASSWORD;
+
 const mongoose = require("mongoose");
 
 const express = require("express");
@@ -13,7 +17,8 @@ const userRoutes = require("./routes/user");
 // se connecter à ma bdd sur MongoDb
 mongoose
   .connect(
-    "mongodb+srv://dylane33:3hGaew16O7MNlkPW@dbdylan.lwhd3x8.mongodb.net/",
+    // `mongodb+srv://${mongodbId}:${mongodbPassword}@dbdylan.lwhd3x8.mongodb.net/`,
+    `mongodb+srv://dylane33:3hGaew16O7MNlkPW@dbdylan.lwhd3x8.mongodb.net/`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
