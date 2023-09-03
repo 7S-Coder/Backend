@@ -18,7 +18,7 @@ const userRoutes = require("./routes/user");
 mongoose
   .connect(
     // `mongodb+srv://${mongodbId}:${mongodbPassword}@dbdylan.lwhd3x8.mongodb.net/`,
-    `mongodb+srv://dylane33:3hGaew16O7MNlkPW@dbdylan.lwhd3x8.mongodb.net/`,
+    `mongodb+srv://dylane33:3hGaew16O7MNlkPW@dbdylan.lwhd3x8.mongodb.net/ocSeven `,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
