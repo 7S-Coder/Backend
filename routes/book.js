@@ -11,13 +11,15 @@ const auth = require("../middleware/auth");
 
 const multer = require("../middleware/multer-config");
 
+const { upload, resizeImage } = require("../middleware/multer-config");
+
 // eslint-disable-next-line no-unused-vars
 const Book = require("../models/Books");
 
-router.get("/", auth, bookCtrl.getAllBooks);
+router.get("/", auth, upload, resizeImage, bookCtrl.getAllBooks);
 router.post("/", auth, multer, bookCtrl.createBook);
 router.get("/:id", auth, bookCtrl.getOneBook);
-router.put("/:id", auth, multer, bookCtrl.modifyBook);
+router.put("/:id", auth, upload, resizeImage, multer, bookCtrl.modifyBook);
 router.delete("/:id", auth, bookCtrl.deleteBook);
 router.post("/:id/rating", auth, bookCtrl.ratingBook);
 router.get("/bestrating", auth, bookCtrl.getBestBooks);

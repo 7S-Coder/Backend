@@ -2,28 +2,36 @@
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
 
+const fs = require("fs");
+
 const Book = require("../models/Books");
 
 const deleteImage = require("../utils/deleteImage");
 
 exports.createBook = async (req, res) => {
   try {
+    // Convertir la chaîne JSON en objet JavaScript
     const bookObject = JSON.parse(req.body.book);
+    // Supprimer les propriétés "_id" et "_userId" de l'objet du livre
     delete bookObject._id;
     delete bookObject._userId;
 
+    // Créer une instance du modèle Book avec les données du livre
     const book = new Book({
       ...bookObject,
-      userId: req.auth.userId,
+      userId: req.auth.userId, // Utiliser l'ID de l'utilisateur extrait de l'authentification
       imageUrl: `${req.protocol}://${req.get("host")}/images/${
         req.file.filename
       }`,
     });
 
+    // Sauvegarder le livre dans la base de données
     await book.save();
 
+    // Envoyer une réponse avec un message de succès
     res.status(201).json({ message: "Livre enregistré !" });
   } catch (error) {
+    // Gérer les erreurs et renvoyer une réponse avec l'erreur
     res.status(400).json({ error });
   }
 };
@@ -73,40 +81,29 @@ exports.modifyBook = async (req, res) => {
     // Gérer les erreurs et renvoyer une réponse avec l'erreur
     return res.status(500).json({ error });
   }
+
+  return res.status(500).json({ message: "Erreur inattendue" });
 };
 
-exports.deleteBook = async (req, res) => {
-  try {
-    // Extraire l'ID du livre des paramètres de la requête
-    const { id } = req.params;
-    // Trouver et supprimer le livre correspondant à l'ID et à l'ID utilisateur
-    const book = await Book.findOneAndDelete({
-      _id: id,
-      userId: req.auth.userId,
-    });
-
-    // Vérifier si le livre a été trouvé
-    if (!book) {
-      return res.status(401).json({ message: "Livre non trouvé !" });
-    }
-
-    // Supprimer l'image du livre si elle existe
-    if (book.imageUrl) {
-      deleteImage(book.imageUrl);
-    }
-
-    // Envoyer une réponse avec un message de succès
-    res.status(200).json({ message: "Objet supprimé !" });
-  } catch (error) {
-    // Gérer les erreurs et renvoyer une réponse avec l'erreur
-    res.status(500).json({ error });
-  }
-};
-
-exports.getOneBook = (req, res) => {
+exports.deleteThing = (req, res) => {
   Book.findOne({ _id: req.params.id })
-    .then((thing) => res.status(200).json(thing))
-    .catch((error) => res.status(404).json({ error }));
+    .then((book) => {
+      if (book.userId != req.auth.userId) {
+        res.status(401).json({ message: "Not authorized" });
+      } else {
+        const filename = book.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, () => {
+          Thing.deleteOne({ _id: req.params.id })
+            .then(() => {
+              res.status(200).json({ message: "Objet supprimé !" });
+            })
+            .catch((error) => res.status(401).json({ error }));
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
 };
 
 exports.getAllBooks = (req, res) => {
