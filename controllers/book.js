@@ -15,7 +15,7 @@ exports.createBook = async (req, res) => {
     // Supprimer les propriétés "_id" et "_userId" de l'objet du livre
     delete bookObject._id;
     delete bookObject._userId;
-
+    console.log(bookObject);
     // Créer une instance du modèle Book avec les données du livre
     const book = new Book({
       ...bookObject,
@@ -24,10 +24,8 @@ exports.createBook = async (req, res) => {
         req.file.filename
       }`,
     });
-
     // Sauvegarder le livre dans la base de données
     await book.save();
-
     // Envoyer une réponse avec un message de succès
     res.status(201).json({ message: "Livre enregistré !" });
   } catch (error) {
@@ -85,15 +83,15 @@ exports.modifyBook = async (req, res) => {
   return res.status(500).json({ message: "Erreur inattendue" });
 };
 
-exports.deleteThing = (req, res) => {
+exports.deleteBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
-      if (book.userId != req.auth.userId) {
+      if (book.userId !== req.auth.userId) {
         res.status(401).json({ message: "Not authorized" });
       } else {
         const filename = book.imageUrl.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
-          Thing.deleteOne({ _id: req.params.id })
+          Book.deleteOne({ _id: req.params.id })
             .then(() => {
               res.status(200).json({ message: "Objet supprimé !" });
             })
@@ -110,6 +108,24 @@ exports.getAllBooks = (req, res) => {
   Book.find()
     .then((things) => res.status(200).json(things))
     .catch((error) => res.status(400).json({ error }));
+};
+
+exports.getOneBook = async (req, res) => {
+  try {
+    // Trouver le livre correspondant à l'ID dans les paramètres de la requête
+    const book = await Book.findOne({ _id: req.params.id });
+
+    // Vérifier si le livre a été trouvé
+    if (!book) {
+      return res.status(404).json({ error: "Livre non trouvé !" });
+    }
+
+    // Envoyer une réponse avec le livre
+    res.status(200).json(book);
+  } catch (error) {
+    // Gérer les erreurs et renvoyer une réponse avec l'erreur
+    res.status(500).json({ error });
+  }
 };
 
 exports.ratingBook = async (req, res) => {
