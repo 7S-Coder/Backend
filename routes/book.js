@@ -12,8 +12,8 @@ const auth = require("../middleware/auth");
 const { upload, resizeImage } = require("../middleware/multer-config");
 
 router.get("/", bookCtrl.getAllBooks);
-router.get("/:id", bookCtrl.getOneBook);
 router.get("/bestrating", bookCtrl.getBestBooks);
+router.get("/:id", bookCtrl.getOneBook);
 router.post("/", auth, upload, resizeImage, bookCtrl.createBook);
 router.post("/:id/rating", bookCtrl.ratingBook);
 router.put("/:id", auth, upload, resizeImage, bookCtrl.modifyBook);
