@@ -1,7 +1,6 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
-
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
@@ -9,7 +8,7 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
 
     // Vérifier et décoder le token à l'aide de la clé secrète
-    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+    const decodedToken = jwt.verify(token, process.env.VITE_TOKEN_SECRET);
 
     const userId = decodedToken.userId;
 

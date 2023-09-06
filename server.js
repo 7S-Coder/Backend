@@ -1,8 +1,10 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
-// const serverPort = import.meta.env.VITE_API_SERVER_PORT;
-const portServer = 4000;
+
+require("dotenv").config();
+
+const portServer = process.env.VITE_SERVER_PORT;
 
 const http = require("http");
 

@@ -3,6 +3,7 @@
 /* eslint-disable comma-dangle */
 const multer = require("multer");
 const sharp = require("sharp");
+const path = require("path");
 
 const MIME_TYPES = {
   "image/jpg": "jpg",

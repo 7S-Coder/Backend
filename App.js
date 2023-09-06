@@ -1,10 +1,9 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
+require("dotenv").config();
 
-// const mongodbId = import.meta.env.VITE_MONGODB_ID;
-
-// const mongodbPassword = import.meta.env.VITE_MONGODB_PASSWORD;
+const connectedMDB = process.env.VITE_API_KEY;
 
 const mongoose = require("mongoose");
 
@@ -14,15 +13,14 @@ const bookRoutes = require("./routes/book");
 
 const userRoutes = require("./routes/user");
 
+const path = require("path");
+
 // se connecter à ma bdd sur MongoDb
 mongoose
-  .connect(
-    `mongodb+srv://dylane33:3hGaew16O7MNlkPW@dbdylan.lwhd3x8.mongodb.net/ocSeven`,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(connectedMDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
@@ -49,5 +47,6 @@ app.use((req, res, next) => {
 
 app.use("/api/books", bookRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 module.exports = app;
