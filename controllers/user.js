@@ -6,9 +6,17 @@ const bcrypt = require("bcrypt");
 
 const jwt = require("jsonwebtoken");
 
-const User = require("../models/user");
+const User = require("../models/Users");
 
 exports.signup = (req, res) => {
+  // Regex pour valider une adresse e-mail
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+  // Vérifie si l'adresse e-mail est valide
+  if (!emailRegex.test(req.body.email)) {
+    return res.status(400).json({ error: "Adresse e-mail invalide" });
+  }
+
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {

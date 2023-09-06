@@ -40,9 +40,8 @@ exports.createBook = async (req, res) => {
   try {
     // Convertir la chaîne JSON en objet JavaScript
     const bookObject = JSON.parse(req.body.book);
-    // Supprimer les propriétés "_id" et "_userId" de l'objet du livre
+    // Supprimer les propriétés "_id" de l'objet du livre
     delete bookObject._id;
-    delete bookObject._userId;
     console.log(bookObject);
     // Créer une instance du modèle Book avec les données du livre
     const book = new Book({
